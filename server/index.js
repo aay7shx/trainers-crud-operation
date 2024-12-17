@@ -108,46 +108,89 @@
 
 
 
-import express from 'express';
-import path from 'path';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-const __filename=fileURLToPath(import.meta.url);
-const __dirname=path.dirname(__filename);
+// import express from 'express';
+// import path from 'path';
+// import dotenv from 'dotenv';
+// import { fileURLToPath } from 'url';
+// const __filename=fileURLToPath(import.meta.url);
+// const __dirname=path.dirname(__filename);
 
-const app =express();
-app.use(express.json());
+// const app =express();
+// app.use(express.json());
+
+// dotenv.config();
+// const port=process.env.Port;
+
+
+// app.use(function num(req,res,next){
+// const secretcode=req.query.secret;
+
+// if(secretcode==='1234')
+// {
+//     req.isAuthorized=true;
+// }
+// else
+// {
+//     req.isAuthorized=false;
+// }
+// next();
+// });
+
+// app.get("/",(req,res)=>{
+//    if (req.isAuthorized)
+//    {
+//     res.sendFile(path.join(__dirname,"views","index.html"));
+//    }
+//    else
+//    {
+//     res.send("Unauthorized");
+//    }
+// })
+
+// //****************************************************************** 
+// app.listen(port,()=>{
+//     console.log(`Server is running on http://localhost:${port}`);
+// })
+
+import express from "express";
+import bodyParser from "body-parser";
+// import path from "path";
+// import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config();
-const port=process.env.Port;
+import Trainer from "./models/trainersModels.js"
+const app=express();
+const PORT = process.env.PORT;
+const URL = process.env.MONGODB_URL;
+console.log(URL);
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:false}));
 
-app.use(function num(req,res,next){
-const secretcode=req.query.secret;
-
-if(secretcode==='1234')
-{
-    req.isAuthorized=true;
-}
-else
-{
-    req.isAuthorized=false;
-}
-next();
-});
-
-app.get("/",(req,res)=>{
-   if (req.isAuthorized)
-   {
-    res.sendFile(path.join(__dirname,"views","index.html"));
-   }
-   else
-   {
-    res.send("Unauthorized");
-   }
+mongoose.connect(URL, {useNewUrlParser:true,useUnifiedTopology:true})
+.then(()=>{console.log("DB connected Successfully");
+    app.listen(PORT,()=>{
+        console.log("Listening at port http://localhost:${PORT}");
+    });
 })
+.catch((err)=>{console.error("Connection failed:",err)});
 
-//****************************************************************** 
-app.listen(port,()=>{
-    console.log(`Server is running on http://localhost:${port}`);
-})
+async function createTrainer(){
+    const trainer = new Trainer({
+        name:"Aayush",
+        email:"aayushborkar@gmail.com",
+        password:"123321",
+        age:20
+    })
+    const result= await trainer.save();
+    console.log("User created :",result);
+
+}
+
+createTrainer();
+// app.use(express.static('views'));
+
+// const __filename=fileURLToPath(import.meta.url);
+// const _dirname=path.dirname(_filename);r
