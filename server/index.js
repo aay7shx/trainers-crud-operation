@@ -152,45 +152,76 @@
 //     console.log(`Server is running on http://localhost:${port}`);
 // })
 
-import express from "express";
-import bodyParser from "body-parser";
-// import path from "path";
-// import { fileURLToPath } from "url";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
+// import express from "express";
+// import bodyParser from "body-parser";
+// // import path from "path";
+// // import { fileURLToPath } from "url";
+// import dotenv from "dotenv";
+// import mongoose from "mongoose";
 
-dotenv.config();
-import Trainer from "./models/trainersModels.js"
-const app=express();
-const PORT = process.env.PORT;
-const URL = process.env.MONGODB_URL;
-console.log(URL);
+// dotenv.config();
+// import Trainer from "./models/trainersModels.js"
+// const app=express();
+// const PORT = process.env.PORT;
+// const URL = process.env.MONGODB_URL;
+// console.log(URL);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:false}));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended:false}));
 
-mongoose.connect(URL, {useNewUrlParser:true,useUnifiedTopology:true})
-.then(()=>{console.log("DB connected Successfully");
-    app.listen(PORT,()=>{
-        console.log("Listening at port http://localhost:${PORT}");
-    });
-})
-.catch((err)=>{console.error("Connection failed:",err)});
+// mongoose.connect(URL, {useNewUrlParser:true,useUnifiedTopology:true})
+// .then(()=>{console.log("DB connected Successfully");
+//     app.listen(PORT,()=>{
+//         console.log("Listening at port http://localhost:${PORT}");
+//     });
+// })
+// .catch((err)=>{console.error("Connection failed:",err)});
 
-async function createTrainer(){
-    const trainer = new Trainer({
-        name:"Aayush",
-        email:"aayushborkar@gmail.com",
-        password:"123321",
-        age:20
-    })
-    const result= await trainer.save();
-    console.log("User created :",result);
+// async function createTrainer(){
+//     const trainer = new Trainer({
+//         name:"Aayush",
+//         email:"aayushborkar@gmail.com",
+//         password:"123321",
+//         age:20
+//     })
+//     const result= await trainer.save();
+//     console.log("User created :",result);
 
-}
+// }
 
-createTrainer();
+// createTrainer();
 // app.use(express.static('views'));
 
 // const __filename=fileURLToPath(import.meta.url);
 // const _dirname=path.dirname(_filename);r
+
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import route from "./routes/trainersRoutes.js";
+import bodyParser from 'body-parser';
+import cors from 'cors';
+
+
+dotenv.config();
+
+const app=express();
+const PORT = process.env.PORT;
+const URL = process.env.MONGODB_URL;
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:false}));
+
+console.log(URL);
+
+app.get("/",(req,res)=>{
+    res.send("Hello")
+})
+ mongoose.connect(URL, {useNewUrlParser:true,useUnifiedTopology:true})
+  .then(()=>{console.log("DB connected successfully");
+    app.listen(PORT,()=>{
+        console.log(`Listening at port http://localhost:${PORT}`);
+    });
+  })
+  .catch((err)=>{console.error("Connection failed:",err)});
+app.use('/api',route);
